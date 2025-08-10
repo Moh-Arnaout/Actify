@@ -1,4 +1,4 @@
-# mohammad_model
+# Wellness AI
 
 A new Flutter project.
 
