@@ -20,6 +20,14 @@ class Appcolors {
   static const Color joint = Color(0xFF08BDBA);
   static Color currentactivity = Color(0xFF002159);
   static const Color start = Color(0xFFFF4154);
+  static final LinearGradient appBarGradient = LinearGradient(
+    colors: [
+      Appcolors.primaryColor,
+      Appcolors.secondaryColor,
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 
   ThemeData primaryTheme = ThemeData(
     //scaffold color

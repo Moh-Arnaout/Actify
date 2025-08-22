@@ -3,10 +3,12 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:mohammad_model/Tracker/activitypredictor.dart';
 import 'package:mohammad_model/Tracker/logs.dart';
+import 'package:mohammad_model/Tracker/statistics.dart';
 import 'package:mohammad_model/bottombar.dart';
 import 'package:mohammad_model/Tracker/buildsensor.dart';
 import 'package:mohammad_model/theme.dart';
@@ -208,11 +210,22 @@ class _ActivityRecognitionScreenState extends State<ActivityRecognitionScreen> {
       backgroundColor: Appcolors.backcolor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'Activity Recognition',
-          style: TextStyle(color: Appcolors.tertiarycolor),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Appcolors.secondaryColor,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Appcolors.primaryColor,
+                Appcolors.secondaryColor,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         elevation: 1,
       ),
       body: Padding(
@@ -220,51 +233,48 @@ class _ActivityRecognitionScreenState extends State<ActivityRecognitionScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Card(
-                // elevation: 1,
-                color: Appcolors.tertiarycolor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Appcolors.tertiarycolor,
+                  borderRadius: BorderRadius.circular(15),
+                  // Add subtle shadow to match the card appearance
+                ),
+                padding: const EdgeInsets.all(20),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              //const SizedBox(width: 10),
-                              Text(
-                                'Fitness And Activity Tracker',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w800,
-                                    color: Appcolors.primaryColor),
-                              ),
-                              Image.asset(
-                                'Images/Weights2.png',
-                                scale: 15,
-                              )
-                            ],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Fitness And Activity Tracker',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: Appcolors.primaryColor,
+                            ),
+                            softWrap: true,
                           ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.3,
-                                child: const Text(
-                                  'This page tracks your movements in real time, helping the app understand your activity patterns so it can support your health and recovery.',
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 10),
+                        Image.asset(
+                          'Images/Weights2.png',
+                          scale: 15,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 10),
+                    const Text(
+                      'This page tracks your movements in real time, helping the app understand your activity patterns so it can support your health and recovery.',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      softWrap: true,
+                    ),
                   ],
                 ),
               ),
@@ -272,52 +282,6 @@ class _ActivityRecognitionScreenState extends State<ActivityRecognitionScreen> {
               const SizedBox(
                 height: 10,
               ),
-              // Status Card
-              // Card(
-              //   elevation: 1,
-              //   shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(15)),
-              //   child: Padding(
-              //     padding: const EdgeInsets.all(20.0),
-              //     child: Column(
-              //       children: [
-              //         Row(
-              //           children: [
-              //             Icon(
-              //               _isModelLoaded ? Icons.check_circle : Icons.error,
-              //               color: _isModelLoaded ? Colors.green : Colors.red,
-              //             ),
-              //             SizedBox(width: 10),
-              //             Text(
-              //               _isModelLoaded
-              //                   ? 'Model Loaded'
-              //                   : 'Model Loading...',
-              //               style: TextStyle(
-              //                   fontSize: 16, fontWeight: FontWeight.w500),
-              //             ),
-              //           ],
-              //         ),
-              //         SizedBox(height: 10),
-              //         Row(
-              //           children: [
-              //             Icon(
-              //               _isListening ? Icons.sensors : Icons.sensors_off,
-              //               color: _isListening ? Colors.blue : Colors.grey,
-              //             ),
-              //             SizedBox(width: 10),
-              //             Text(
-              //               _isListening
-              //                   ? 'Listening to Sensors'
-              //                   : 'Sensors Stopped',
-              //               style: TextStyle(
-              //                   fontSize: 16, fontWeight: FontWeight.w500),
-              //             ),
-              //           ],
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
 
               const SizedBox(height: 15),
 
@@ -492,32 +456,38 @@ class _ActivityRecognitionScreenState extends State<ActivityRecognitionScreen> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Container(
-                      height: 131,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Appcolors.currentactivity),
-                      child: Center(
-                        child: ClipOval(
-                          child: Container(
-                            width: 100,
-                            height: 100,
-                            color: Appcolors.tertiarycolor,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'Images/graph2.png',
-                                  scale: 1,
-                                ),
-                                Text(
-                                  'Statisics',
-                                  style: TextStyle(
-                                      color: Appcolors.primaryColor,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                )
-                              ],
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(() => StatsPage());
+                      },
+                      child: Container(
+                        height: 131,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Appcolors.currentactivity),
+                        child: Center(
+                          child: ClipOval(
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              color: Appcolors.tertiarycolor,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'Images/stats2.svg',
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                  Text(
+                                    'Statisics',
+                                    style: TextStyle(
+                                        color: Appcolors.primaryColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),

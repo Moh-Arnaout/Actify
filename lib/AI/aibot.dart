@@ -5,6 +5,7 @@ import 'package:get/get_rx/src/rx_stream/rx_stream.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:http/http.dart' as http;
 import 'package:mohammad_model/AI/message.dart';
+import 'package:mohammad_model/bottombar.dart';
 import 'package:mohammad_model/theme.dart';
 
 class Aibot extends StatefulWidget {
@@ -148,8 +149,12 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: isUser
-              ? LinearGradient(colors: [Color(0xFF001141), Color(0xFF0F67FE)])
-              : LinearGradient(colors: [Color(0xFF08BDBA), Color(0xFF08BDBA)])),
+              ? LinearGradient(colors: [
+                  Appcolors.primaryColor,
+                  Appcolors.primaryColor.withOpacity(0.8)
+                ])
+              : LinearGradient(
+                  colors: [Appcolors.joint, Appcolors.joint.withOpacity(0.8)])),
       child: Icon(
         isUser ? Icons.person : Icons.smart_toy,
         color: Appcolors.tertiarycolor,
@@ -158,7 +163,7 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
     );
   }
 
-  Widget_buildDot(int index) {
+  Widget _buildDot(int index) {
     return AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
@@ -166,8 +171,8 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color: Appcolors.tertiarycolor.withOpacity(
-                0.3 +
+              color: Appcolors.backcolor.withOpacity(
+                0.4 +
                     (sin(_animationController.value * 2 * pi + index * 0.5) *
                         0.3),
               ),
@@ -177,34 +182,69 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
         });
   }
 
+  int _selectedIndex = 3;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-            colors: [Color(0xFF0A0A0A), Color(0xFF1A1A1A), Color(0xFF16213E)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight),
+        gradient: LinearGradient(colors: [
+          Appcolors.backcolor,
+          Appcolors.backcolor,
+          Appcolors.fieldbackcolor,
+        ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
       ),
       child: SafeArea(
           child: Column(
         children: [
           Container(
             padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Appcolors.tertiarycolor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
             child: Row(
               children: [
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Appcolors.fieldbackcolor,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Appcolors.subtitleColor,
+                      size: 20,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16),
                 Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
                       gradient: LinearGradient(colors: [
-                        Color(0xFF667EEA),
-                        Color(0xFF764BA2),
+                        Appcolors.primaryColor,
+                        Appcolors.primaryColor.withOpacity(0.8),
                       ]),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                            color: Color(0xFF667EEA).withOpacity(0.3),
+                            color: Appcolors.primaryColor.withOpacity(0.3),
                             blurRadius: 12,
                             offset: Offset(0, 4))
                       ]),
@@ -214,9 +254,7 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
                     size: 24,
                   ),
                 ),
-                SizedBox(
-                  width: 16,
-                ),
+                SizedBox(width: 16),
                 Expanded(
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,35 +262,36 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
                     Text(
                       'Wellness AI Assistant',
                       style: TextStyle(
-                          color: Appcolors.tertiarycolor,
+                          color: Appcolors.secondaryColor,
                           fontSize: 20,
                           fontWeight: FontWeight.w700),
                     ),
                     Text(
-                      'Lets talk health! ',
+                      'Let\'s talk health!',
                       style: TextStyle(
-                        color: Appcolors.tertiarycolor,
+                        color: Appcolors.subtitleColor,
                         fontSize: 14,
                       ),
                     ),
                   ],
                 )),
-                Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: Appcolors.tertiarycolor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Icon(
-                    Icons.more_vert,
-                    color: Appcolors.tertiarycolor,
-                  ),
-                )
+                // Container(
+                //   padding: EdgeInsets.all(8),
+                //   decoration: BoxDecoration(
+                //       color: Appcolors.fieldbackcolor,
+                //       borderRadius: BorderRadius.circular(12)),
+                //   child: Icon(
+                //     Icons.more_vert,
+                //     color: Appcolors.subtitleColor,
+                //   ),
+                // )
               ],
             ),
           ),
           Expanded(
               child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            controller: _scrollController,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             itemCount: _message.length + (_isLoading ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == _message.length && _isLoading) {
@@ -261,29 +300,29 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
                   child: Row(
                     children: [
                       _buildAvatar(false),
-                      SizedBox(
-                        width: 8,
-                      ),
+                      SizedBox(width: 8),
                       Container(
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                            color: Appcolors.tertiarycolor.withOpacity(0.1),
+                            color: Appcolors.tertiarycolor,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                                color: Appcolors.tertiarycolor.withOpacity(0.1),
-                                width: 1)),
+                                color: Appcolors.boardercolor, width: 1),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 5,
+                                offset: Offset(0, 2),
+                              ),
+                            ]),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Widget_buildDot(0),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            Widget_buildDot(1),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            Widget_buildDot(2),
+                            _buildDot(0),
+                            SizedBox(width: 4),
+                            _buildDot(1),
+                            SizedBox(width: 4),
+                            _buildDot(2),
                           ],
                         ),
                       ),
@@ -309,9 +348,7 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!message.isUser) _buildAvatar(false),
-          SizedBox(
-            width: 8,
-          ),
+          SizedBox(width: 8),
           Flexible(
               child: Container(
                   constraints: BoxConstraints(
@@ -319,24 +356,18 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
                   ),
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                      gradient: message.isUser
-                          ? LinearGradient(
-                              colors: [Color(0xFF667EEA), Color(0xFF764BA2)])
-                          : LinearGradient(colors: [
-                              Color(0xFFFFFFFF).withOpacity(0.1),
-                              Color(0xFFFFFFFF).withOpacity(0.05)
-                            ]),
+                      color: message.isUser
+                          ? Appcolors.primaryColor
+                          : Appcolors.tertiarycolor,
                       borderRadius: BorderRadius.circular(20),
                       border: message.isUser
                           ? null
-                          : Border.all(
-                              color: Appcolors.tertiarycolor.withOpacity(0.1),
-                              width: 1),
+                          : Border.all(color: Appcolors.boardercolor, width: 1),
                       boxShadow: [
                         BoxShadow(
                           color: message.isUser
-                              ? Color(0xFF667EEA).withOpacity(0.3)
-                              : Colors.black.withOpacity(0.1),
+                              ? Appcolors.primaryColor.withOpacity(0.3)
+                              : Colors.black.withOpacity(0.05),
                           blurRadius: 8,
                           offset: Offset(0, 2),
                         ),
@@ -350,11 +381,9 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
                       : GptMarkdown(
                           message.content,
                           style: TextStyle(
-                              color: Appcolors.tertiarycolor, fontSize: 16),
+                              color: Appcolors.textColor, fontSize: 16),
                         ))),
-          SizedBox(
-            width: 8,
-          ),
+          SizedBox(width: 8),
           if (message.isUser) _buildAvatar(true),
         ],
       ),
@@ -369,16 +398,24 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
     }
     return Container(
       padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.transparent),
+      decoration: BoxDecoration(
+        color: Appcolors.tertiarycolor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, -2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Appcolors.tertiarycolor.withOpacity(0.1),
+                color: Appcolors.fieldbackcolor,
                 borderRadius: BorderRadius.circular(25),
-                border: Border.all(
-                    color: Appcolors.tertiarycolor.withOpacity(0.2), width: 1),
+                border: Border.all(color: Appcolors.boardercolor, width: 1),
               ),
               child: TextField(
                 controller: _messageController,
@@ -386,10 +423,10 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
                 onSubmitted: (value) {
                   _sendMessage();
                 },
-                style: TextStyle(color: Appcolors.tertiarycolor, fontSize: 16),
+                style: TextStyle(color: Appcolors.textColor, fontSize: 16),
                 decoration: InputDecoration(
                   hintText: "Type your message...",
-                  hintStyle: TextStyle(color: Appcolors.tertiarycolor),
+                  hintStyle: TextStyle(color: Appcolors.fieldcolor),
                   border: InputBorder.none,
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -397,27 +434,21 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
               ),
             ),
           ),
-          SizedBox(
-            width: 12,
-          ),
+          SizedBox(width: 12),
           GestureDetector(
             onTap: _isLoading ? null : _sendMessage,
             child: Container(
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                  gradient: _isLoading
-                      ? LinearGradient(colors: [
-                          Colors.grey.withOpacity(0.3),
-                          Colors.grey.withOpacity(0.2)
-                        ])
-                      : LinearGradient(
-                          colors: [Color(0xFF667EEA), Color(0xFF764BA2)]),
+                  color: _isLoading
+                      ? Appcolors.fieldcolor
+                      : Appcolors.primaryColor,
                   borderRadius: BorderRadius.circular(50),
                   boxShadow: _isLoading
                       ? []
                       : [
                           BoxShadow(
-                            color: Color(0xFF667EEA).withOpacity(0.3),
+                            color: Appcolors.primaryColor.withOpacity(0.3),
                             blurRadius: 8,
                             offset: Offset(0, 2),
                           )

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:mohammad_model/Metrics/metriccard.dart';
 import 'package:mohammad_model/theme.dart';
 
 class Healthcard extends StatelessWidget {
@@ -27,51 +30,56 @@ class Healthcard extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                        color: Appcolors.tertiarycolor,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Column(
+            child: GestureDetector(
+              onTap: () {
+                Get.to(() => Metrics());
+              },
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Image.asset(
-                        pic2,
-                        scale: 7,
-                      )
+                      Text(
+                        name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          color: Appcolors.tertiarycolor,
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Text(
-                    name2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12,
-                      color: Appcolors.secondaryColor,
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Center(
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          pic2,
+                          scale: 7,
+                        )
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Text(
+                      name2,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                        color: Appcolors.secondaryColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
