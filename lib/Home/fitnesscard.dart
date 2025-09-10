@@ -1,9 +1,8 @@
+import 'package:final_model_ai/Tracker/activity2.dart';
+import 'package:final_model_ai/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:mohammad_model/Home/home.dart';
-import 'package:mohammad_model/Tracker/activity.dart';
-import 'package:mohammad_model/theme.dart';
 
 class FitnessCard extends StatelessWidget {
   final String name;
@@ -14,70 +13,65 @@ class FitnessCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Get.to(() => ActivityRecognitionScreen());
-      },
-      child: Container(
-        //margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Appcolors.cardcolor,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 6,
-              offset: Offset(0, 3),
+    return Container(
+      //margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Appcolors.cardcolor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10), // rounded square
+            child: Image.asset(
+              pic,
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
             ),
-          ],
-        ),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10), // rounded square
-              child: Image.asset(
-                pic,
-                width: 40,
-                height: 40,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Appcolors.secondaryColor,
-                        ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: Appcolors.secondaryColor,
                       ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        name2,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
-                          color: Appcolors.secondaryColor,
-                        ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      name2,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        color: Appcolors.secondaryColor,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

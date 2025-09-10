@@ -1,4 +1,4 @@
-package com.example.mohammad_model
+package com.example.final_model_ai
 
 import io.flutter.embedding.android.FlutterActivity
 

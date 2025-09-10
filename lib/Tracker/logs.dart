@@ -1,15 +1,15 @@
+import 'package:final_model_ai/Tracker/activity2.dart';
+import 'package:final_model_ai/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:mohammad_model/Tracker/activity.dart';
-import 'package:mohammad_model/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 class LogsPage extends StatefulWidget {
   final List<String> activityLogs;
-  const LogsPage({Key? key, required this.activityLogs}) : super(key: key);
+  const LogsPage({super.key, required this.activityLogs});
 
   @override
   _LogsPageState createState() => _LogsPageState();
@@ -23,8 +23,11 @@ class _LogsPageState extends State<LogsPage> {
     'All',
     'Jogging',
     'Walking',
+    'Upstairs', // Added
+    'Downstairs', // Added
     'Sitting',
-    'Standing'
+    'Standing',
+    'Lying' // Added
   ];
 
   @override
@@ -57,7 +60,8 @@ class _LogsPageState extends State<LogsPage> {
           groupedLogs.add(ActivityGroup(
             activity: currentLog.activity,
             startTime: startTime,
-            endTime: currentLog.timestamp,
+            endTime:
+                nextLog.timestamp, // Use NEXT activity's timestamp as end time
           ));
 
           // Start new group
@@ -69,11 +73,13 @@ class _LogsPageState extends State<LogsPage> {
         }
       }
 
-      // Add the last group
+      // Add the last group (ongoing activity)
+      // For the last activity, use current time as end time if it's still ongoing
       groupedLogs.add(ActivityGroup(
         activity: currentLog.activity,
         startTime: startTime,
-        endTime: currentLog.timestamp,
+        endTime:
+            DateTime.now(), // Use current time for the last/ongoing activity
       ));
     }
 
@@ -158,6 +164,12 @@ class _LogsPageState extends State<LogsPage> {
         return Colors.purple;
       case 'Standing':
         return Colors.brown;
+      case 'Upstairs':
+        return Colors.blue;
+      case 'Downstairs':
+        return Colors.orange;
+      case 'Lying':
+        return Colors.indigo;
       default:
         return Colors.grey;
     }
@@ -173,6 +185,13 @@ class _LogsPageState extends State<LogsPage> {
         return Icons.chair;
       case 'Standing':
         return Icons.accessibility;
+      case 'Upstairs':
+        return Icons.keyboard_arrow_up; // ⬆️ Up arrow
+      case 'Downstairs':
+        return Icons.keyboard_arrow_down; // ⬇️ Down arrow
+      case 'Lying':
+        return Icons.hotel; // 🛏️ Bed icon
+
       default:
         return Icons.help_outline;
     }
@@ -230,7 +249,7 @@ class _LogsPageState extends State<LogsPage> {
           children: [
             GestureDetector(
               onTap: () {
-                Get.to(() => ActivityRecognitionScreen());
+                Get.back();
               },
               child: SvgPicture.asset(
                 'Images/back.svg',

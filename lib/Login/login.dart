@@ -1,10 +1,10 @@
+import 'package:final_model_ai/Home/home.dart';
+import 'package:final_model_ai/Login/First.dart';
+import 'package:final_model_ai/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mohammad_model/Home/home.dart';
-import 'package:mohammad_model/Login/First.dart';
-import 'package:mohammad_model/theme.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -125,7 +125,7 @@ class LoginPage extends StatelessWidget {
                       shadowColor: Colors.black26,
                     ),
                     onPressed: () {
-                      Get.to(() => Homepage());
+                      Get.offAll(() => const Homepage());
                     },
                     child: Text(
                       'Sign In',

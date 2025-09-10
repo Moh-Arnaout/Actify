@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:mohammad_model/AI/aibot.dart';
-import 'package:mohammad_model/Metrics/metriccard.dart';
-import 'package:mohammad_model/Metrics/metrics.dart';
-import 'package:mohammad_model/Tracker/activity.dart';
-import 'package:mohammad_model/Home/home.dart';
-import 'package:mohammad_model/theme.dart';
+import 'package:final_model_ai/theme.dart';
 
 class Bottombar extends StatefulWidget {
   final int currentIndex;
@@ -30,7 +24,6 @@ class _BottombarState extends State<Bottombar> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    // Create animation controllers for each nav item
     _animationControllers = List.generate(
       4,
       (index) => AnimationController(
@@ -39,7 +32,6 @@ class _BottombarState extends State<Bottombar> with TickerProviderStateMixin {
       ),
     );
 
-    // Create width animations
     _widthAnimations = _animationControllers
         .map((controller) => Tween<double>(
               begin: 50.0,
@@ -50,7 +42,6 @@ class _BottombarState extends State<Bottombar> with TickerProviderStateMixin {
             )))
         .toList();
 
-    // Create opacity animations for labels
     _opacityAnimations = _animationControllers
         .map((controller) => Tween<double>(
               begin: 0.0,
@@ -61,7 +52,6 @@ class _BottombarState extends State<Bottombar> with TickerProviderStateMixin {
             )))
         .toList();
 
-    // Set initial state
     if (widget.currentIndex >= 0 && widget.currentIndex < 4) {
       _animationControllers[widget.currentIndex].forward();
     }
@@ -71,14 +61,10 @@ class _BottombarState extends State<Bottombar> with TickerProviderStateMixin {
   void didUpdateWidget(Bottombar oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Update animations when currentIndex changes
     if (oldWidget.currentIndex != widget.currentIndex) {
-      // Reverse old selection
       if (oldWidget.currentIndex >= 0 && oldWidget.currentIndex < 4) {
         _animationControllers[oldWidget.currentIndex].reverse();
       }
-
-      // Forward new selection
       if (widget.currentIndex >= 0 && widget.currentIndex < 4) {
         _animationControllers[widget.currentIndex].forward();
       }
@@ -113,42 +99,10 @@ class _BottombarState extends State<Bottombar> with TickerProviderStateMixin {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(
-                icon: Icons.home_rounded,
-                label: 'Home',
-                index: 0,
-                onTap: () {
-                  widget.onTap(0);
-                  Get.to(() => Homepage());
-                },
-              ),
-              _buildNavItem(
-                icon: Icons.fitness_center_rounded,
-                label: 'Tracker',
-                index: 1,
-                onTap: () {
-                  widget.onTap(1);
-                  Get.to(() => ActivityRecognitionScreen());
-                },
-              ),
-              _buildNavItem(
-                icon: Icons.monitor_heart_rounded,
-                label: 'Health',
-                index: 2,
-                onTap: () {
-                  widget.onTap(2);
-                  Get.to(() => Metrics());
-                },
-              ),
-              _buildNavItem(
-                icon: Icons.chat_rounded,
-                label: 'AI Bot',
-                index: 3,
-                onTap: () {
-                  widget.onTap(3);
-                  Get.to(() => Aibot());
-                },
-              ),
+              _buildNavItem(Icons.home_rounded, 'Home', 0),
+              _buildNavItem(Icons.fitness_center_rounded, 'Tracker', 1),
+              _buildNavItem(Icons.monitor_heart_rounded, 'Health', 2),
+              _buildNavItem(Icons.chat_rounded, 'AI Bot', 3),
             ],
           ),
         ),
@@ -156,16 +110,11 @@ class _BottombarState extends State<Bottombar> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildNavItem({
-    required IconData icon,
-    required String label,
-    required int index,
-    required VoidCallback onTap,
-  }) {
+  Widget _buildNavItem(IconData icon, String label, int index) {
     final isSelected = widget.currentIndex == index;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => widget.onTap(index),
       child: AnimatedBuilder(
         animation: _animationControllers[index],
         builder: (context, child) {

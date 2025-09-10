@@ -1,30 +1,31 @@
+import 'package:final_model_ai/AI/aibot.dart';
+import 'package:final_model_ai/Home/fitnesscard.dart';
+import 'package:final_model_ai/Home/healthcard.dart';
+import 'package:final_model_ai/Metrics/metriccard.dart';
+import 'package:final_model_ai/Tracker/activity2.dart';
+import 'package:final_model_ai/Tracker/logs.dart';
+import 'package:final_model_ai/bottombar.dart';
+import 'package:final_model_ai/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:mohammad_model/AI/aibot.dart';
-import 'package:mohammad_model/Tracker/logs.dart';
-import 'package:mohammad_model/bottombar.dart';
-import 'package:mohammad_model/Home/fitnesscard.dart';
-import 'package:mohammad_model/Home/healthcard.dart';
-import 'package:mohammad_model/theme.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+  final int initialIndex;
+
+  const Homepage({super.key, this.initialIndex = 0});
 
   @override
   State<Homepage> createState() => _HomepageState();
 }
 
-class _HomepageState extends State<Homepage> {
-  int _selectedIndex = 0;
+class _HomepageState extends State<Homepage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  // Bottom navigation variables
+  int _currentIndex = 0;
 
   Duration walkingDuration = Duration.zero;
   Duration sittingDuration = Duration.zero;
@@ -33,6 +34,7 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
+    _currentIndex = widget.initialIndex;
     _loadDurations();
   }
 
@@ -40,12 +42,10 @@ class _HomepageState extends State<Homepage> {
     final prefs = await SharedPreferences.getInstance();
     final logs = prefs.getStringList('activity_logs') ?? [];
 
-    // Parse logs into ActivityLog
     List<ActivityLog> parsedLogs =
         logs.map((log) => _parseLogEntry(log)).toList();
     parsedLogs.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-    // Group consecutive activities
     List<ActivityGroup> groups = [];
     if (parsedLogs.isNotEmpty) {
       ActivityLog current = parsedLogs.first;
@@ -70,7 +70,6 @@ class _HomepageState extends State<Homepage> {
           endTime: current.timestamp));
     }
 
-    // Filter for today only
     final today = DateTime.now();
     groups = groups
         .where((g) =>
@@ -79,7 +78,6 @@ class _HomepageState extends State<Homepage> {
             g.startTime.day == today.day)
         .toList();
 
-    // Sum durations
     Duration walk = Duration.zero;
     Duration sit = Duration.zero;
     Duration stand = Duration.zero;
@@ -90,11 +88,13 @@ class _HomepageState extends State<Homepage> {
       if (g.activity == "Standing") stand += g.duration;
     }
 
-    setState(() {
-      walkingDuration = walk;
-      sittingDuration = sit;
-      standingDuration = stand;
-    });
+    if (mounted) {
+      setState(() {
+        walkingDuration = walk;
+        sittingDuration = sit;
+        standingDuration = stand;
+      });
+    }
   }
 
   ActivityLog _parseLogEntry(String logEntry) {
@@ -120,16 +120,63 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
+  void _onTabTapped(int index) {
+    if (_currentIndex != index) {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+  }
+
+  // Card navigation methods - same as bottom bar behavior
+  void _navigateToTracker() {
+    _onTabTapped(1); // Same as pressing Activity Tracker tab
+  }
+
+  void _navigateToMetrics() {
+    _onTabTapped(2); // Same as pressing Health Metrics tab
+  }
+
+  void _navigateToAIBot() {
+    _onTabTapped(3); // Same as pressing AI Bot tab
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: Bottombar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+    super.build(context);
+    return WillPopScope(
+      onWillPop: () async {
+        if (_currentIndex != 0) {
+          _onTabTapped(0);
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        bottomNavigationBar: Bottombar(
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
+        ),
+        // Use IndexedStack instead of PageView to preserve Scaffolds
+        body: IndexedStack(
+          index: _currentIndex,
+          children: [
+            _buildHomeContent(),
+            const ActivityRecognitionScreen2(),
+            const Metrics(),
+            const Aibot(),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildHomeContent() {
+    return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Appcolors.secondaryColor,
+        elevation: 0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -148,6 +195,7 @@ class _HomepageState extends State<Homepage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Header Section
             Container(
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
@@ -227,10 +275,13 @@ class _HomepageState extends State<Homepage> {
                 ),
               ),
             ),
+
+            // Content Section
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
+                  // Fitness Tracker Section
                   Row(
                     children: [
                       Text('Fitness And Activity Tracker',
@@ -243,16 +294,16 @@ class _HomepageState extends State<Homepage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Your top 3 activites for today:',
+                      Text('Your top 3 activities for today:',
                           style: TextStyle(
                               color: Appcolors.secondaryColor,
                               fontSize: 12,
                               fontWeight: FontWeight.w700)),
                     ],
                   ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+                  const SizedBox(height: 15),
+
+                  // Fitness Cards with navigation
                   FitnessCard(
                       'Walking',
                       'You walked for ${_formatDuration(walkingDuration)} today!',
@@ -267,7 +318,10 @@ class _HomepageState extends State<Homepage> {
                       'Standing',
                       'You stood for ${_formatDuration(standingDuration)} today!',
                       'Images/Standing.png'),
+
                   const SizedBox(height: 20),
+
+                  // Health Metrics Section
                   Row(
                     children: [
                       Text('Health Metrics',
@@ -287,34 +341,32 @@ class _HomepageState extends State<Homepage> {
                               fontWeight: FontWeight.w700)),
                     ],
                   ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+                  const SizedBox(height: 15),
+
+                  // Health Cards with navigation
                   const SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        Healthcard('Heart', 'Your heart is performing at 85%',
-                            'Images/heart.png', Appcolors.heart),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Healthcard('Lungs', 'Healthy breathing patterns',
+                        const Healthcard(
+                            'Heart',
+                            'Your heart is performing at 85%',
+                            'Images/heart.png',
+                            Appcolors.heart),
+                        const SizedBox(width: 10),
+                        const Healthcard('Lungs', 'Healthy breathing patterns',
                             'Images/lungs.png', Appcolors.lungs),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Healthcard('Joints', 'Good joint mobility',
+                        const SizedBox(width: 10),
+                        const Healthcard('Joints', 'Good joint mobility',
                             'Images/bones1.png', Appcolors.joint),
-                        SizedBox(
-                          width: 20,
-                        ),
+                        const SizedBox(width: 20),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+
+                  const SizedBox(height: 20),
+
+                  // AI Chatbot Section
                   Row(
                     children: [
                       Text('Wellness AI Chatbot',
@@ -324,42 +376,37 @@ class _HomepageState extends State<Homepage> {
                               fontWeight: FontWeight.w800)),
                     ],
                   ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => Aibot());
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      height: 130,
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(232, 0, 33, 89),
-                        borderRadius: BorderRadius.circular(12),
-                        image: const DecorationImage(
-                          alignment: Alignment.centerRight,
-                          image: AssetImage('Images/robot.png'),
-                        ),
+                  const SizedBox(height: 15),
+
+                  // AI Bot Card
+                  Container(
+                    width: double.infinity,
+                    height: 130,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(232, 0, 33, 89),
+                      borderRadius: BorderRadius.circular(12),
+                      image: const DecorationImage(
+                        alignment: Alignment.centerRight,
+                        image: AssetImage('Images/robot.png'),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                'Your Wellness \nAI Chatbot',
-                                style: TextStyle(
-                                  color: Appcolors.tertiarycolor,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                softWrap: true,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              'Your Wellness \nAI Chatbot',
+                              style: TextStyle(
+                                color: Appcolors.tertiarycolor,
+                                fontSize: 30,
+                                fontWeight: FontWeight.w700,
                               ),
+                              softWrap: true,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -369,7 +416,6 @@ class _HomepageState extends State<Homepage> {
           ],
         ),
       ),
-      //Bottombar();
     );
   }
 }

@@ -1,8 +1,8 @@
+import 'package:final_model_ai/Metrics/metriccard.dart';
+import 'package:final_model_ai/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:mohammad_model/Metrics/metriccard.dart';
-import 'package:mohammad_model/theme.dart';
 
 class Healthcard extends StatelessWidget {
   const Healthcard(this.name, this.name2, this.pic2, this.colors, {super.key});
@@ -23,63 +23,58 @@ class Healthcard extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 6,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Row(
         children: [
           Expanded(
-            child: GestureDetector(
-              onTap: () {
-                Get.to(() => Metrics());
-              },
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Appcolors.tertiarycolor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          pic2,
-                          scale: 7,
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Text(
-                      name2,
-                      softWrap: true,
-                      textAlign: TextAlign.center,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 12,
-                        color: Appcolors.secondaryColor,
+                        fontSize: 16,
+                        color: Appcolors.tertiarycolor,
                       ),
                     ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        pic2,
+                        scale: 7,
+                      )
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Text(
+                    name2,
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12,
+                      color: Appcolors.secondaryColor,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

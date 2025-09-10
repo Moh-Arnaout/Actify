@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:final_model_ai/AI/message.dart';
+import 'package:final_model_ai/Home/home.dart';
+import 'package:final_model_ai/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/src/rx_stream/rx_stream.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:http/http.dart' as http;
-import 'package:mohammad_model/AI/message.dart';
-import 'package:mohammad_model/bottombar.dart';
-import 'package:mohammad_model/theme.dart';
 
 class Aibot extends StatefulWidget {
   const Aibot({super.key});
@@ -78,7 +79,7 @@ class _AibotState extends State<Aibot> with TickerProviderStateMixin {
       setState(() {
         _message.add(Message(
             content:
-                'Sorry, I could mnot process your request. Please try again!',
+                'Sorry, I could not process your request. Please try again!',
             isUser: false,
             timestamp: DateTime.now(),
             id: _generateId()));
@@ -182,179 +183,178 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
         });
   }
 
-  int _selectedIndex = 3;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  // Fixed back navigation method
+  void _handleBackNavigation() {
+    // Navigate back to Homepage and ensure bottom nav is set to home (index 0)
+    Get.offAll(() => const Homepage());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      // Handle system back button
+      onWillPop: () async {
+        _handleBackNavigation();
+        return false; // Prevent default back behavior
+      },
+      child: Scaffold(
         body: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          Appcolors.backcolor,
-          Appcolors.backcolor,
-          Appcolors.fieldbackcolor,
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-      ),
-      child: SafeArea(
-          child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Appcolors.tertiarycolor,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Appcolors.fieldbackcolor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: Appcolors.subtitleColor,
-                      size: 20,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 16),
-                Container(
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        Appcolors.primaryColor,
-                        Appcolors.primaryColor.withOpacity(0.8),
-                      ]),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Appcolors.primaryColor.withOpacity(0.3),
-                            blurRadius: 12,
-                            offset: Offset(0, 4))
-                      ]),
-                  child: Icon(
-                    Icons.smart_toy_rounded,
-                    color: Appcolors.tertiarycolor,
-                    size: 24,
-                  ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Wellness AI Assistant',
-                      style: TextStyle(
-                          color: Appcolors.secondaryColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700),
-                    ),
-                    Text(
-                      'Let\'s talk health!',
-                      style: TextStyle(
-                        color: Appcolors.subtitleColor,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                )),
-                // Container(
-                //   padding: EdgeInsets.all(8),
-                //   decoration: BoxDecoration(
-                //       color: Appcolors.fieldbackcolor,
-                //       borderRadius: BorderRadius.circular(12)),
-                //   child: Icon(
-                //     Icons.more_vert,
-                //     color: Appcolors.subtitleColor,
-                //   ),
-                // )
-              ],
-            ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              Appcolors.backcolor,
+              Appcolors.backcolor,
+              Appcolors.fieldbackcolor,
+            ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
           ),
-          Expanded(
-              child: ListView.builder(
-            controller: _scrollController,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            itemCount: _message.length + (_isLoading ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index == _message.length && _isLoading) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child: Row(
-                    children: [
-                      _buildAvatar(false),
-                      SizedBox(width: 8),
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                            color: Appcolors.tertiarycolor,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                                color: Appcolors.boardercolor, width: 1),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 5,
-                                offset: Offset(0, 2),
-                              ),
-                            ]),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _buildDot(0),
-                            SizedBox(width: 4),
-                            _buildDot(1),
-                            SizedBox(width: 4),
-                            _buildDot(2),
-                          ],
-                        ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Appcolors.tertiarycolor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                );
-              }
-              return _buildMessageBubble(_message[index]);
-            },
-          )),
-          _buildInputArea(),
-        ],
-      )),
-    ));
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: _handleBackNavigation, // Use the fixed method
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Appcolors.fieldbackcolor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.arrow_back,
+                            color: Appcolors.subtitleColor,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: [
+                              Appcolors.primaryColor,
+                              Appcolors.primaryColor.withOpacity(0.8),
+                            ]),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                  color:
+                                      Appcolors.primaryColor.withOpacity(0.3),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4))
+                            ]),
+                        child: Icon(
+                          Icons.smart_toy_rounded,
+                          color: Appcolors.tertiarycolor,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Wellness AI Assistant',
+                            style: TextStyle(
+                                color: Appcolors.secondaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          Text(
+                            'Let\'s talk health!',
+                            style: TextStyle(
+                              color: Appcolors.subtitleColor,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      )),
+                    ],
+                  ),
+                ),
+                Expanded(
+                    child: ListView.builder(
+                  controller: _scrollController,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  itemCount: _message.length + (_isLoading ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == _message.length && _isLoading) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Row(
+                          children: [
+                            _buildAvatar(false),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                  color: Appcolors.tertiarycolor,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                      color: Appcolors.boardercolor, width: 1),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ]),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _buildDot(0),
+                                  const SizedBox(width: 4),
+                                  _buildDot(1),
+                                  const SizedBox(width: 4),
+                                  _buildDot(2),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return _buildMessageBubble(_message[index]);
+                  },
+                )),
+                _buildInputArea(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildMessageBubble(Message message) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment:
             message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!message.isUser) _buildAvatar(false),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Flexible(
               child: Container(
                   constraints: BoxConstraints(
                     maxWidth: MediaQuery.of(context).size.width * 0.75,
                   ),
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                       color: message.isUser
                           ? Appcolors.primaryColor
@@ -369,7 +369,7 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
                               ? Appcolors.primaryColor.withOpacity(0.3)
                               : Colors.black.withOpacity(0.05),
                           blurRadius: 8,
-                          offset: Offset(0, 2),
+                          offset: const Offset(0, 2),
                         ),
                       ]),
                   child: message.isUser
@@ -383,7 +383,7 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
                           style: TextStyle(
                               color: Appcolors.textColor, fontSize: 16),
                         ))),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           if (message.isUser) _buildAvatar(true),
         ],
       ),
@@ -397,14 +397,14 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
       _animationController.stop();
     }
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Appcolors.tertiarycolor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, -2),
+            offset: const Offset(0, -2),
           ),
         ],
       ),
@@ -429,16 +429,16 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
                   hintStyle: TextStyle(color: Appcolors.fieldcolor),
                   border: InputBorder.none,
                   contentPadding:
-                      EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 ),
               ),
             ),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           GestureDetector(
             onTap: _isLoading ? null : _sendMessage,
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                   color: _isLoading
                       ? Appcolors.fieldcolor
@@ -450,7 +450,7 @@ Do not provide medical diagnosis — advise users to see a doctor for urgent or 
                           BoxShadow(
                             color: Appcolors.primaryColor.withOpacity(0.3),
                             blurRadius: 8,
-                            offset: Offset(0, 2),
+                            offset: const Offset(0, 2),
                           )
                         ]),
               child: Icon(

@@ -1,4 +1,4 @@
-name: mohammad_model
+name: final_model_ai
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.2.0+3
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
@@ -46,6 +46,7 @@ dependencies:
   flutter_svg: ^2.2.0
   fl_chart: ^1.0.0
   google_fonts: ^6.3.0
+  flutter_foreground_task: ^6.0.0+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -70,7 +71,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/activity_model.tflite
+    - assets/new_20_8_CNN_activity_model2.tflite
+    - assets/
     - Images/
 
   # An image asset can refer to one or more resolution-specific "variants", see

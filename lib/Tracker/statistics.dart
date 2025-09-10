@@ -1,17 +1,14 @@
+import 'package:final_model_ai/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:http/http.dart';
-import 'package:mohammad_model/Home/home.dart';
-import 'package:mohammad_model/Tracker/activity.dart';
-import 'package:mohammad_model/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'dart:math' as math;
 
 class StatsPage extends StatefulWidget {
-  const StatsPage({Key? key}) : super(key: key);
+  const StatsPage({super.key});
 
   @override
   _StatsPageState createState() => _StatsPageState();
@@ -48,10 +45,27 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
     final logs = prefs.getStringList('activity_logs') ?? [];
 
     setState(() {
-      _allLogs = logs.map((log) => _parseLogEntry(log)).toList();
+      _allLogs = logs
+          .map((log) => _parseLogEntry(log))
+          .where((log) => _isValidActivity(log.activity)) // Filter out unknowns
+          .toList();
       _allLogs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     });
     _animationController.forward();
+  }
+
+  // Helper method to check if activity is valid (not unknown)
+  bool _isValidActivity(String activity) {
+    const validActivities = [
+      'Jogging',
+      'Walking',
+      'Sitting',
+      'Standing',
+      'Lying',
+      'Upstairs',
+      'Downstairs'
+    ];
+    return validActivities.contains(activity);
   }
 
   ActivityLog _parseLogEntry(String logEntry) {
@@ -79,6 +93,12 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
         return Colors.purple;
       case 'Standing':
         return Colors.brown;
+      case 'Lying':
+        return Colors.blue;
+      case 'Upstairs':
+        return Colors.orange;
+      case 'Downstairs':
+        return Colors.yellow;
       default:
         return Colors.grey;
     }
@@ -94,6 +114,12 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
         return Icons.chair;
       case 'Standing':
         return Icons.accessibility;
+      case 'Lying':
+        return Icons.hotel;
+      case 'Upstairs':
+        return Icons.keyboard_arrow_up;
+      case 'Downstairs':
+        return Icons.keyboard_arrow_down;
       default:
         return Icons.help_outline;
     }
@@ -131,7 +157,10 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
     final filteredLogs = _getFilteredLogs();
     Map<String, int> counts = {};
     for (var log in filteredLogs) {
-      counts[log.activity] = (counts[log.activity] ?? 0) + 1;
+      // Only count valid activities
+      if (_isValidActivity(log.activity)) {
+        counts[log.activity] = (counts[log.activity] ?? 0) + 1;
+      }
     }
     return counts;
   }
@@ -157,21 +186,32 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
       for (var log in filteredLogs) {
         if (log.timestamp.day == date.day &&
             log.timestamp.month == date.month &&
-            log.timestamp.year == date.year) {
+            log.timestamp.year == date.year &&
+            _isValidActivity(log.activity)) {
+          // Only count valid activities
           dayActivities[log.activity] = (dayActivities[log.activity] ?? 0) + 1;
         }
       }
 
-      trends[dayKey] = ['Jogging', 'Walking', 'Sitting', 'Standing']
-          .map((activity) => dayActivities[activity] ?? 0)
-          .toList();
+      trends[dayKey] = [
+        'Jogging',
+        'Walking',
+        'Sitting',
+        'Standing',
+        'Lying',
+        'Upstairs',
+        'Downstairs'
+      ].map((activity) => dayActivities[activity] ?? 0).toList();
     }
 
     return trends;
   }
 
   String _getMostActiveTime() {
-    final filteredLogs = _getFilteredLogs();
+    final filteredLogs = _getFilteredLogs()
+        .where(
+            (log) => _isValidActivity(log.activity)) // Filter valid activities
+        .toList();
     if (filteredLogs.isEmpty) return 'No data available';
 
     Map<int, int> hourCounts = {};
@@ -186,7 +226,10 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
   }
 
   String _getMostActiveDay() {
-    final filteredLogs = _getFilteredLogs();
+    final filteredLogs = _getFilteredLogs()
+        .where(
+            (log) => _isValidActivity(log.activity)) // Filter valid activities
+        .toList();
     if (filteredLogs.isEmpty) return 'No data available';
 
     Map<int, int> dayCounts = {};
@@ -210,7 +253,10 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
   }
 
   double _getAverageActivitiesPerDay() {
-    final filteredLogs = _getFilteredLogs();
+    final filteredLogs = _getFilteredLogs()
+        .where(
+            (log) => _isValidActivity(log.activity)) // Filter valid activities
+        .toList();
     if (filteredLogs.isEmpty) return 0.0;
 
     final days = _selectedPeriod == 'Day'
@@ -251,7 +297,7 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
           children: [
             GestureDetector(
               onTap: () {
-                Get.to(() => ActivityRecognitionScreen());
+                Get.back();
               },
               child: SvgPicture.asset(
                 'Images/back.svg',
@@ -259,7 +305,7 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
                 height: 30,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             const Text(
@@ -687,7 +733,7 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
@@ -742,7 +788,15 @@ class LineChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (data.isEmpty) return;
 
-    final activities = ['Jogging', 'Walking', 'Sitting', 'Standing'];
+    final activities = [
+      'Jogging',
+      'Walking',
+      'Sitting',
+      'Standing',
+      'Lying',
+      'Upstairs',
+      'Downstairs'
+    ];
     final paint = Paint()
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;

@@ -1,5 +1,5 @@
+import 'package:final_model_ai/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:mohammad_model/theme.dart';
 
 class Buttons extends StatefulWidget {
   const Buttons(this.tname, {super.key, required this.onPressed});

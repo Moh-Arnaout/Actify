@@ -1,10 +1,9 @@
+import 'package:final_model_ai/Login/login.dart';
+import 'package:final_model_ai/Login/signup.dart';
+import 'package:final_model_ai/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mohammad_model/Login/buttons.dart';
-import 'package:mohammad_model/Login/login.dart';
-import 'package:mohammad_model/Login/signup.dart';
-import 'package:mohammad_model/theme.dart';
 
 class First extends StatelessWidget {
   const First({super.key});
@@ -56,7 +55,7 @@ class First extends StatelessWidget {
 
               /// Subtitle tagline
               Text(
-                "Your health, your journey — simplified.",
+                'Your Health, Your Journey\nSimplified.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.tajawal(
                   color: Colors.black54,
@@ -106,7 +105,7 @@ class First extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Get.to(SignUpPage());
+                        Get.to(const SignUpPage());
                       },
                       child: Text(
                         "Sign Up",

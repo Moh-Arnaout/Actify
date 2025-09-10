@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 
 class Appcolors {
-  static Color primaryColor = Color(0xFF0F67FE);
+  static Color primaryColor = const Color(0xFF0F67FE);
   //static Color primaryAccent = Color.fromRGBO(120, 14, 14, 1);
-  static Color secondaryColor = Color(0xFF001141);
+  static Color secondaryColor = const Color(0xFF001141);
   //static Color secondaryAccent = Color.fromRGBO(35, 35, 35, 1);
-  static Color subtitleColor = Color.fromRGBO(37, 37, 37, 1);
-  static Color textColor = Color.fromRGBO(37, 37, 37, 1);
-  static Color fieldcolor = Color(0xFFA8A49E);
-  static Color highlightColor = Color.fromRGBO(212, 172, 13, 1);
+  static Color subtitleColor = const Color.fromRGBO(37, 37, 37, 1);
+  static Color textColor = const Color.fromRGBO(37, 37, 37, 1);
+  static Color fieldcolor = const Color(0xFFA8A49E);
+  static Color highlightColor = const Color.fromRGBO(212, 172, 13, 1);
   static Color backcolor = const Color.fromRGBO(240, 240, 240, 1);
-  static Color tertiarycolor = Color(0xFFFFFFFF);
-  static Color googleback = Color(0xFF1A73E8);
-  static Color fieldbackcolor = Color.fromARGB(255, 239, 239, 239);
-  static Color boardercolor = Color(0xFFE0DAD3);
-  static Color cardcolor = Color.fromARGB(255, 255, 255, 255);
+  static Color tertiarycolor = const Color(0xFFFFFFFF);
+  static Color googleback = const Color(0xFF1A73E8);
+  static Color fieldbackcolor = const Color.fromARGB(255, 239, 239, 239);
+  static Color boardercolor = const Color(0xFFE0DAD3);
+  static Color cardcolor = const Color.fromARGB(255, 255, 255, 255);
   static const Color heart = Color(0xFFFA4D5E);
   static const Color lungs = Color(0xFF0F67FE);
   static const Color joint = Color(0xFF08BDBA);
-  static Color currentactivity = Color(0xFF002159);
+  static Color currentactivity = const Color(0xFF002159);
   static const Color start = Color(0xFFFF4154);
   static final LinearGradient appBarGradient = LinearGradient(
     colors: [

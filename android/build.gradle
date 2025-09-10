@@ -1,3 +1,11 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    // No hard-pinned Kotlin classpath here; the Plugin DSL in settings.gradle controls versions.
+}
+
 allprojects {
     repositories {
         google()
@@ -6,9 +14,11 @@ allprojects {
 }
 
 rootProject.buildDir = "../build"
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+
 subprojects {
     project.evaluationDependsOn(":app")
 }

@@ -1,9 +1,9 @@
+import 'package:final_model_ai/Login/First.dart';
+import 'package:final_model_ai/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mohammad_model/Login/First.dart';
-import 'package:mohammad_model/theme.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -136,7 +136,7 @@ class _SplashscreenState extends State<Splashscreen>
   void _navigateAfterDelay() async {
     await Future.delayed(const Duration(seconds: 4));
     if (mounted) {
-      Get.to(() => First());
+      Get.to(() => const First());
     }
   }
 
@@ -201,7 +201,7 @@ class _SplashscreenState extends State<Splashscreen>
                               ).createShader(bounds),
                               child: Text(
                                 'Actify',
-                                style: GoogleFonts.audiowide(
+                                style: GoogleFonts.cairo(
                                   fontSize: 50,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
@@ -231,9 +231,9 @@ class _SplashscreenState extends State<Splashscreen>
                             return Opacity(
                               opacity: opacity,
                               child: Text(
-                                'Your health, your journey — simplified.',
+                                'Your Health, Your Journey \nSimplified.',
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.audiowide(
+                                style: GoogleFonts.cairo(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
                                   color: Appcolors.joint,
