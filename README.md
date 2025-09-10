@@ -1,4 +1,4 @@
-# Wellness AI
+# Actify
 
 A new Flutter project.
 
