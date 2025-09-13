@@ -61,9 +61,9 @@ Actify is a wellness mobile application that transforms daily motion data captur
 Actify was created as part of the **IEEE MotionSense AI Competition 2025** held in **Amman, Jordan**, supervised and judged by **MathWorks**. Out of **64 teams** participating and **16 final submissions**, Actify proudly secured **3rd place** in this prestigious tournament! 🥉
 
 Our team consisted of three dedicated members:
-- Mohammad Arnaout
-- Odai Altamrawi
-- Mu'taz Muneer
+- @MohammadArnaout
+- @odaiAltmrawe
+- @Sopkii
 
 This achievement highlights our commitment to leveraging AI and signal processing for real-world health applications. 🚀💡
 
