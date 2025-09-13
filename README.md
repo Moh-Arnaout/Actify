@@ -19,6 +19,11 @@ Actify is a wellness mobile application that transforms daily motion data captur
 - **Accurate Activity Recognition:** Leveraging deep learning on mobile sensor data for reliable classification.
 
 ---
+## Screenshots
+
+<img width="1853" height="974" alt="image" src="https://github.com/user-attachments/assets/103b69b6-f0ec-4959-bf06-8bc76adebd8e" />
+
+---
 
 ## Technologies and Tools
 
