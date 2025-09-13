@@ -79,7 +79,7 @@ This achievement highlights our commitment to leveraging AI and signal processin
 2. Ensure Flutter is installed and set up on your machine.
 3. Install dependencies using `flutter pub get`.
 4. The AI model (`model.tflite`) is included and ready for use within the app.
-5. Run the app on an Android/iOS device or emulator.
+5. Run the app on an Android device or emulator.
 6. For the AI chatbot functionality, an API key for Deepseek API is required and should be configured in the app.
 
 ---
