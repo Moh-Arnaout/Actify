@@ -93,9 +93,8 @@ This achievement highlights our commitment to leveraging AI and signal processin
 
 ## Contact
 
-- Contact me via:
-1- Email : Mohammadrami15@yahoo.com
-2- Phone : +926797055476
-3- LinkedIn : www.linkedin.com/in/mohammad-arnaout-9003b52b3
+**Email** : Mohammadrami15@yahoo.com |
+**Phone** : +926797055476 | 
+**LinkedIn** : www.linkedin.com/in/mohammad-arnaout-9003b52b3
 
 Thanks for reading!
