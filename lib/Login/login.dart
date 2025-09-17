@@ -1,6 +1,8 @@
 import 'package:final_model_ai/Home/home.dart';
+import 'package:final_model_ai/Login/Components/textformfield.dart';
 import 'package:final_model_ai/Login/First.dart';
 import 'package:final_model_ai/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -11,6 +13,9 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController email = TextEditingController();
+    TextEditingController password = TextEditingController();
+    GlobalKey<FormState> formkey = GlobalKey<FormState>();
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -63,7 +68,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Please enter your username and password',
+                  'Please enter your Email and Password',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.tajawal(
                     fontWeight: FontWeight.w500,
@@ -75,37 +80,36 @@ class LoginPage extends StatelessWidget {
                 const SizedBox(height: 40),
 
                 /// Username field
-                TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.person_outline),
-                    hintText: 'Username',
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide:
-                          BorderSide(color: Appcolors.googleback, width: 1),
-                    ),
-                  ),
-                ),
+                Form(
+                  key: formkey,
+                  child: Column(
+                    children: [
+                      CustomTextForm(
+                        hinttext: 'Email',
+                        mycontroller: email,
+                        myicon: Icons.email,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
 
-                const SizedBox(height: 20),
-
-                /// Password field
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    hintText: 'Password',
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide:
-                          BorderSide(color: Appcolors.googleback, width: 1),
-                    ),
+                      /// Password field
+                      CustomTextForm(
+                        hinttext: 'Password',
+                        mycontroller: password,
+                        myicon: Icons.lock,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
                   ),
                 ),
 
@@ -124,8 +128,25 @@ class LoginPage extends StatelessWidget {
                       elevation: 6,
                       shadowColor: Colors.black26,
                     ),
-                    onPressed: () {
-                      Get.offAll(() => const Homepage());
+                    onPressed: () async {
+                      if (formkey.currentState!.validate()) {
+                        try {
+                          final credential = await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                            email: email.text,
+                            password: password.text,
+                          );
+                          Get.offAll(() => const Homepage());
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'user-not-found') {
+                            print('No user found for that email.');
+                          } else if (e.code == 'wrong-password') {
+                            print('Wrong password provided for that user.');
+                          }
+                        }
+                      } else {
+                        print('Not Vlaid');
+                      }
                     },
                     child: Text(
                       'Sign In',

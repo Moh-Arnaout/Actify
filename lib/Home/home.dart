@@ -1,12 +1,16 @@
 import 'package:final_model_ai/AI/aibot.dart';
 import 'package:final_model_ai/Home/fitnesscard.dart';
 import 'package:final_model_ai/Home/healthcard.dart';
+import 'package:final_model_ai/Login/login.dart';
 import 'package:final_model_ai/Metrics/metriccard.dart';
 import 'package:final_model_ai/Tracker/activity2.dart';
 import 'package:final_model_ai/Tracker/logs.dart';
 import 'package:final_model_ai/bottombar.dart';
 import 'package:final_model_ai/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -184,9 +188,13 @@ class _HomepageState extends State<Homepage>
               Icons.settings,
               color: Appcolors.tertiarycolor,
             ),
-            Icon(
-              Icons.notifications,
-              color: Appcolors.tertiarycolor,
+            GestureDetector(
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Get.offAll(() => const LoginPage());
+              },
+              child: Icon(Icons.logout_outlined,
+                  color: Appcolors.tertiarycolor, size: 28),
             ),
           ],
         ),

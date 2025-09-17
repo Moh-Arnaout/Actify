@@ -1,6 +1,8 @@
 import 'package:final_model_ai/Home/home.dart';
+import 'package:final_model_ai/Login/Components/textformfield.dart';
 import 'package:final_model_ai/Login/login.dart';
 import 'package:final_model_ai/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -129,90 +131,73 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 15),
 
                 /// Full Name field
-                TextField(
-                  controller: _fullNameController,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.person),
-                    hintText: 'Full Name',
-                    hintStyle: GoogleFonts.notoSansTangsa(fontSize: 15),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          BorderSide(color: Appcolors.boardercolor, width: 1),
-                    ),
-                  ),
+                CustomTextForm(
+                  hinttext: 'Full Name',
+                  mycontroller: _fullNameController,
+                  myicon: Icons.person,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your full name';
+                    }
+                    return null;
+                  },
                 ),
-
                 const SizedBox(height: 15),
 
                 /// Username field
-                TextField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.alternate_email),
-                    hintText: 'Username',
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          BorderSide(color: Appcolors.googleback, width: 1),
-                    ),
-                  ),
+                CustomTextForm(
+                  hinttext: 'Username',
+                  mycontroller: _usernameController,
+                  myicon: Icons.alternate_email,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your username';
+                    }
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 15),
 
                 /// Email field
-                TextField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    hintText: 'Email',
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          BorderSide(color: Appcolors.googleback, width: 1),
-                    ),
-                  ),
+                CustomTextForm(
+                  hinttext: 'Email',
+                  mycontroller: _emailController,
+                  myicon: Icons.email,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 15),
 
                 /// Password field
-                TextField(
+                TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                    ),
+                    prefixIcon: const Icon(Icons.lock_clock_outlined),
                     hintText: 'Password',
                     filled: true,
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsets.symmetric(vertical: 12),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                       borderSide:
                           BorderSide(color: Appcolors.googleback, width: 1),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                     ),
                   ),
                 ),
@@ -366,12 +351,33 @@ class _SignUpPageState extends State<SignUpPage> {
                         Get.to(() => const Homepage());
                       }
                     },
-                    child: Text(
-                      'Create Account',
-                      style: GoogleFonts.firaSans(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Appcolors.tertiarycolor,
+                    child: GestureDetector(
+                      onTap: () async {
+                        try {
+                          final credential = await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                          );
+                          print(credential);
+                          Get.to(() => const Homepage());
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'weak-password') {
+                            print('The password provided is too weak.');
+                          } else if (e.code == 'email-already-in-use') {
+                            print('The account already exists for that email.');
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                      child: Text(
+                        'Create Account',
+                        style: GoogleFonts.firaSans(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Appcolors.tertiarycolor,
+                        ),
                       ),
                     ),
                   ),
